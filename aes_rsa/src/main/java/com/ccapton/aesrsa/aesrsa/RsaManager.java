@@ -13,13 +13,13 @@ public class RsaManager {
 
     private static final String TAG="RsaManager";
 
-    private static RsaManagerKeeper rsaManagerKeeper;
+    private static KeyPairKeeper keyPairKeeper;
 
     private RsaManager(){
 
     }
 
-    public interface RsaManagerKeeper{
+    public interface KeyPairKeeper{
         KeyPair getKeyPaire(String kpKey);
         void setKeyPair(String kpKey, KeyPair keyParie);
     }
@@ -32,8 +32,8 @@ public class RsaManager {
         return RsaManagerHolder.rsaManager;
     }
 
-    public static void init(RsaManagerKeeper keeper){
-        rsaManagerKeeper = keeper;
+    public static void init(KeyPairKeeper keeper){
+        keyPairKeeper = keeper;
     }
 
     /*
@@ -49,12 +49,12 @@ public class RsaManager {
 
         RsaExecutor rsaExecutor = new RsaExecutor();
 
-        if (rsaManagerKeeper!=null){
-            if (rsaManagerKeeper.getKeyPaire(kpKey)==null){
+        if (keyPairKeeper!=null){
+            if (keyPairKeeper.getKeyPaire(kpKey)==null){
                 rsaExecutor.setRsaKey(RSAEncryptDecrypt.generateRSAKey());
-                rsaManagerKeeper.setKeyPair(kpKey,rsaExecutor.getRsaKey());
+                keyPairKeeper.setKeyPair(kpKey,rsaExecutor.getRsaKey());
             } else {
-                rsaExecutor.setRsaKey(rsaManagerKeeper.getKeyPaire(kpKey));
+                rsaExecutor.setRsaKey(keyPairKeeper.getKeyPaire(kpKey));
             }
         }
 
@@ -82,15 +82,15 @@ public class RsaManager {
 
             RsaExecutor executor = new RsaExecutor();
 
-            if (rsaManagerKeeper!=null){
-                if (rsaManagerKeeper.getKeyPaire(kpKey)!=null){
+            if (keyPairKeeper!=null){
+                if (keyPairKeeper.getKeyPaire(kpKey)!=null){
                     executor.setEncryptedAESKey(ByteUtil.toByteArray(SPUtils.getInstance().getString(encryptedAesKey)));
                 }
                 if (executor.getRsaKey() == null)
-                    executor.setRsaKey(rsaManagerKeeper.getKeyPaire(kpKey));
+                    executor.setRsaKey(keyPairKeeper.getKeyPaire(kpKey));
             }
 
-            Log.w(TAG, "load: "+GsonUtil.to_String((rsaManagerKeeper.getKeyPaire(kpKey))));
+            Log.w(TAG, "load: "+GsonUtil.to_String((keyPairKeeper.getKeyPaire(kpKey))));
             decryptText = executor.decryptString(SPUtils.getInstance().getString(encryptedRsaTextKey));
 
             long end = SystemClock.currentThreadTimeMillis();

@@ -8,7 +8,7 @@ import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AesRsaApp extends Application implements RsaManager.RsaManagerKeeper {
+public class AesRsaApp extends Application implements RsaManager.KeyPairKeeper {
 
     private Map<String,KeyPair> keyPairMap = new HashMap<>();
 
